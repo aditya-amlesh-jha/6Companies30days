@@ -12,33 +12,34 @@
 class Solution {
 public:
     vector<int> getAllElements(TreeNode* root1, TreeNode* root2) {
-        vector<int> a,b;
-        inOrder(root1,a);
-        inOrder(root2,b);
-        vector<int> c;
-        int i=0,j=0;
-        while(i<a.size() && j<b.size()){
-            if(a[i]<b[j]){
-                c.push_back(a[i++]);
+        vector<int> ans;
+        stack<TreeNode*> a,b;
+        //combining iterative inorder for two trees;
+        while(a.size() || b.size() || root1 || root2){
+            while(root1){
+                a.push(root1);
+                root1=root1->left;
+            }
+            while(root2){
+                b.push(root2);
+                root2=root2->left;
+            }
+            //now take stack top with lesser value
+            //case : one stack can be empty
+            // TreeNode *top;
+            if(b.empty() || (a.size() && a.top()->val<=b.top()->val)){
+                root1 = a.top();
+                a.pop();
+                ans.push_back(root1->val);
+                root1 = root1->right;
             }
             else{
-                c.push_back(b[j++]);
-            }
+                root2 = b.top();
+                b.pop();
+                ans.push_back(root2->val);
+                root2 = root2->right;
+            }     
         }
-        while(i<a.size()){
-            c.push_back(a[i++]);
-        }
-        while(j<b.size()){
-            c.push_back(b[j++]);
-        }
-        return c;
-    }
-    void inOrder(TreeNode *root, vector<int> &ans){
-        if(root==nullptr){
-            return;
-        }
-        inOrder(root->left,ans);
-        ans.push_back(root->val);
-        inOrder(root->right,ans);
+        return ans;
     }
 };
