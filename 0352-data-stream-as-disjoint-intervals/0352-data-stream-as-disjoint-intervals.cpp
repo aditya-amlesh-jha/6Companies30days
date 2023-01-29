@@ -1,33 +1,32 @@
 class SummaryRanges {
-    set<int> parent;
+    set<int> nums;
 public:
     SummaryRanges() {
         
     }
     
     void addNum(int value) {
-        parent.insert(value);
+        nums.insert(value);
     }
     
     vector<vector<int>> getIntervals() {
         vector<vector<int>> ans;
-        int k = INT_MAX;
-        for(auto i = parent.rbegin();i!=parent.rend();++i){
-            if(*i >= k){
-                continue;
+        int start, end;
+        start = end = -1;
+        for(auto x:nums){
+            if(end < 0){
+                start = end = x;
             }
-            int temp = findParent(*i);
-            ans.push_back({temp,*i});
-            k = min(temp,k);
+            else if(x-end == 1){
+                end = x;
+            }
+            else{
+                ans.push_back({start,end});
+                start = end = x;
+            }
         }
-        reverse(ans.begin(),ans.end());
+        ans.push_back({start,end});
         return ans;
-    }
-    int findParent(int n){
-        if(parent.count(n-1)){
-            return findParent(n-1);
-        }
-        return n;
     }
 };
 
